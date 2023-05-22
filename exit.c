@@ -1,15 +1,15 @@
 #include "shell.h"
 
 /**
-* exit-c - cmd_exit
+* exit_cmd - exit func
 * @command: cmd
-* @line: input
+* @line: inputs
 *
 * Return: 0
 */
-void exit_c(char **cmd, char *ln)
+void exit_cmd(char **command, char *line)
 {
-	free(ln);
-	free_buffers(cmd);
+	free(line);
+	free_buffers(command);
 	exit(0);
 }
