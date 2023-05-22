@@ -7,5 +7,9 @@ void main(void)
 {
 	int variable = 0;
 
-	printf("%d\n", variable);
+	if (variable == 0)
+	{
+		printf("%d\n", variable);
+	}
+	printf("I passed Betty checks \n");
 }
