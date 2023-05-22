@@ -1,13 +1,13 @@
 #include "shell.h"
 
 /**
-* exit_cmd - handles the exit command
-* @command: tokenized command
-* @line: input read from stdin
+* exit-c - cmd_exit
+* @command: cmd
+* @line: input
 *
-* Return: no return
+* Return: 0
 */
-void exit_cmd(char **cmd, char *ln)
+void exit_c(char **cmd, char *ln)
 {
 	free(ln);
 	free_buffers(cmd);
