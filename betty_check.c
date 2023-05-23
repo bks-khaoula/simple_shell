@@ -8,8 +8,9 @@ void main(void)
 	int variable = 0;
 
 	if (variable == 0)
-	{
 		printf("%d\n", variable);
-	}
+	else
+		printf("variable didn't match! \n");
+
 	printf("I passed Betty checks \n");
 }
