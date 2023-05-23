@@ -7,13 +7,13 @@
 #include <string.h>
 #include <unistd.h>
 
-/* environment variables */
+/* env variables */
 extern char **environ;
 
 /* string handlers */
 int _strlen(char *s);
 
-/* handle built ins */
+/* handle */
 char *add_end_path(char *path, char *cmd);
 void print_env(void);
 void exit_cmd(char **command, char *line);
