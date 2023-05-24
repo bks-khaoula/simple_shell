@@ -5,7 +5,7 @@
 * @path: paths
 * @command: cmd
 *
-* Return: out
+* Return: output
 * NULL failed
 */
 char *test_path(char **path, char *command)
