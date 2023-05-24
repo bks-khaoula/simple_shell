@@ -17,5 +17,5 @@ int _strlen(char *s);
 char *add_end_path(char *path, char *cmd);
 void print_env(void);
 void exit_cmd(char **command, char *line);
-
+char *test_path(char **path, char *command);
 #endif /* SHELL_H */
