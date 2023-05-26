@@ -1,92 +1,92 @@
 #include "shell.h"
 
 /**
- * myenv - prints the current environment
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- * Return: Always 0
+ * builtin_env - shows the environment where the shell runs
+ * @data: struct for the program's data
+ * Return: zero if sucess, or other number if its declared in the arguments
  */
-int myenv(info_t *info)
-{
-	print_list_str(info->env);
-	return (0);
-}
-
-/**
- * getenv - gets the value of an environ variable
- * @info: Structure containing potential arguments. Used to maintain
- * @name: env var name
- *
- * Return: the value
- */
-char getenv(info_t *info, const char *name)
-{
-	list_t *node = info->env;
-	char *p;
-
-	while (node)
-	{
-		p = starts_with(node->str, name);
-		if (p && *p)
-			return (p);
-		node = node->next;
-	}
-	return (NULL);
-}
-
-/**
- * mysetenv - Initialize a new environment variable,
- *             or modify an existing one
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: Always 0
- */
-int mysetenv(info_t *info)
-{
-	if (info->argc != 3)
-	{
-		eputs("Incorrect number of arguements\n");
-		return (1);
-	}
-	if (_setenv(info, info->argv[1], info->argv[2]))
-		return (0);
-	return (1);
-}
-
-/**
- * myunsetenv - Remove an environment variable
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * Return: Always 0
- */
-int myunsetenv(info_t *info)
+int builtin_env(data_of_program *data)
 {
 	int i;
+	char cpname[50] = {'\0'};
+	char *var_copy = NULL;
 
-	if (info->argc == 1)
+	/* if not arguments */
+	if (data->tokens[1] == NULL)
+		print_environ(data);
+	else
 	{
-		eputs("Too few arguements.\n");
-		return (1);
+		for (i = 0; data->tokens[1][i]; i++)
+		{/* checks if exists a char = */
+			if (data->tokens[1][i] == '=')
+			{/* checks if exists a var with the same name and change its value*/
+			/* temporally */
+				var_copy = str_duplicate(env_get_key(cpname, data));
+				if (var_copy != NULL)
+					env_set_key(cpname, data->tokens[1] + i + 1, data);
+
+				/* print the environ */
+				print_environ(data);
+				if (env_get_key(cpname, data) == NULL)
+				{/* print the variable if it does not exist in the environ */
+					_print(data->tokens[1]);
+					_print("\n");
+				}
+				else
+				{/* returns the old value of the var*/
+					env_set_key(cpname, var_copy, data);
+					free(var_copy);
+				}
+				return (0);
+			}
+			cpname[i] = data->tokens[1][i];
+		}
+		errno = 2;
+		perror(data->command_name);
+		errno = 127;
 	}
-	for (i = 1; i <= info->argc; i++)
-		_unsetenv(info, info->argv[i]);
+	return (0);
+}
+
+/**
+ * builtin_set_env - ..
+ * @data: struct for the program's data
+ * Return: zero if sucess, or other number if its declared in the arguments
+ */
+int builtin_set_env(data_of_program *data)
+{
+	/* validate args */
+	if (data->tokens[1] == NULL || data->tokens[2] == NULL)
+		return (0);
+	if (data->tokens[3] != NULL)
+	{
+		errno = E2BIG;
+		perror(data->command_name);
+		return (5);
+	}
+
+	env_set_key(data->tokens[1], data->tokens[2], data);
 
 	return (0);
 }
 
 /**
- * populate_envlist - populates env linked list
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- * Return: Always 0
+ * builtin_unset_env - ..
+ * @data: struct for the program's data'
+ * Return: ..
  */
-int populate_envlist(info_t *info)
+int builtin_unset_env(data_of_program *data)
 {
-	list_t *node = NULL;
-	size_t i;
+	/* validate args */
+	if (data->tokens[1] == NULL)
+		return (0);
+	if (data->tokens[2] != NULL)
+	{
+		errno = E2BIG;
+		perror(data->command_name);
+		return (5);
+	}
+	env_remove_key(data->tokens[1], data);
 
-	for (i = 0; environ[i]; i++)
-		add_node_end(&node, environ[i], 0);
-	info->env = node;
 	return (0);
 }
